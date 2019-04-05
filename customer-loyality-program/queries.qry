@@ -1,0 +1,21 @@
+
+
+/*Apache-2.0 */
+
+query selectMembers {
+  description: "Select All Member"
+  statement: SELECT org.clp.biznet.Member
+}
+
+query selectPartners {
+  description: "Select All Partner"
+  statement: SELECT org.clp.biznet.Partner
+}
+query selectEarnPoints {
+  description:"select app Points Earn Transaction"
+  statement: SELECT org.clp.biznet.EarnPoints
+}
+query selectUsePoints {
+  description: "select all point use transaction"
+  statement: SELECT org.clp.biznet.UsePoints
+}

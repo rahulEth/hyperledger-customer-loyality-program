@@ -1,0 +1,145 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+// member to have access to their own account
+rule MmberAccessOwnRecord {
+    description: "Allow memeber to access to their own account"
+    participant(p): "org.clp.biznet.Member"
+    operation: ALL
+    resource(r): "org.clp.biznet.Member"
+    condition: (p.getIdentifier() == r.getIdentifier()) 
+    action:ALLOW
+}
+
+// member not to have access to other member accounts
+rule MemberAccessMembers {
+    description: "Deny member to have access to other account"
+    participant: "org.clp.biznet.Member"
+    operation: ALL
+    resource:"org.clp.biznet.Member"
+    action: DENY  
+}
+
+// member have access to partnars on the network
+
+rule MemberAccessPartners {
+  description: "Members have access to all partners on the network"
+  participant: "org.clp.biznet.Member"
+  operation: ALL
+  resource: "org.clp.biznet.Partner"
+  action: ALLOW
+
+}
+
+//member have access to earn point transaction where they are member
+rule MemberAccessEarnPoints {
+  description: "Allow member to have access to earnPoints where they are the member"
+  participant(p): "org.clp.biznet.Member"
+  operation: ALL
+  resource(r): "org.clp.biznet.EarnPoints"
+  condition: (p.getIdentifier() == r.member.getIdentifier())
+  action: ALLOW
+}
+
+// member have access to usePoints transaction where they are member
+rule MemberAccessUsePoints {
+	description: "Allow member to have access to use point where they are member"
+	participant(p): "org.clp.biznet.Member"
+	operation: ALL
+    resource(r): "org.clp.biznet.UsePoints"
+	condition: (p.getIdentifier() == r.member.getIdentifier())
+	action: ALLOW
+}
+
+// partner access
+rule PartnerAccessOwnRecord {
+	description: "Partners have access to their own account"
+	participant(p): "org.clp.biznet.Partner"
+	operation: ALL
+	resource(r): "org.clp.biznet.Partner"
+	condition:(p.getIdentifier() == r.getIdentifier())
+	action: ALLOW
+}
+
+//partner do not have access to other partners account
+rule PartnerAccessPartner {
+	description: "Partners do not have access to other partner accounts"
+	participant: "org.clp.biznet.Partner"
+	operation: ALL
+	resource: "org.clp.biznet.Partner"
+	action: DENY
+}
+
+//partners not to have access to members accounts
+rule PartnerAccessMember {
+	description: "Partners do not have access to members accounts to make  system more transparent"
+	participant: "org.clp.biznet.Partner"
+	operation: ALL
+    resource: "org.clp.biznet.Member"
+    action: DENY
+}
+// partners have access to those earnPoint transaction where they are partner
+rule PartnerAccessEarnPoints {
+	description: "partnars have access to those transaction where they are members"
+	participant(p): "org.clp.biznet.Partner"
+	operation: READ
+	resource(r): "org.clp.biznet.EarnPoints"
+	condition: (p.getIdentifier() == r.partner.getIdentifier())
+	action: ALLOW
+}
+
+
+// partners have access to those usePoint transaction where they are partner
+rule PartnerAccessUsePoints {
+	description: "partnars have access to those usePoint transaction where they are members"
+	participant(p): "org.clp.biznet.Partner"
+	operation: READ
+	resource(r): "org.clp.biznet.UsePoints"
+	condition: (p.getIdentifier() == r.partner.getIdentifier())
+	action: ALLOW
+}
+
+rule SystemACL { 
+    description: "System ACL to permit all acccess"
+	participant: "ANY"
+    operation: ALL  
+    resource:"org.hyperledger.composer.system.**"
+	action: ALLOW
+}
+
+
+
+
+
+
+
+
+
+
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
